@@ -831,6 +831,12 @@ var getIntTests = []GetTest{
 		path:  []string{"p"},
 		isErr: true,
 	},
+	{ // Issue #178: Crash in searchKeys
+		desc:  `Crash in searchKeys`,
+		json:  `{{{"":`,
+		path:  []string{"a", "b"},
+		isErr: true,
+	},
 }
 
 var getFloatTests = []GetTest{
@@ -1453,7 +1459,7 @@ func TestObjectEach(t *testing.T) {
 	}
 }
 
-var testJson = []byte(`{"name": "Name", "order": "Order", "sum": 100, "len": 12, "isPaid": true, "nested": {"a":"test", "b":2, "nested3":{"a":"test3","b":4}, "c": "unknown"}, "nested2": {"a":"test2", "b":3}, "arr": [{"a":"zxc", "b": 1}, {"a":"123", "b":2}], "arrInt": [1,2,3,4], "intPtr": 10}`)
+var testJson = []byte(`{"name": "Name", "order": "Order", "sum": 100, "len": 12, "isPaid": true, "nested": {"a":"test", "b":2, "nested3":{"a":"test3","b":4}, "c": "unknown"}, "nested2": {"a":"test2", "b":3}, "arr": [{"a":"zxc", "b": 1}, {"a":"123", "b":2}], "arrInt": [1,2,3,4], "intPtr": 10, "foo": [{"bar": "baz"}]}`)
 
 func TestEachKey(t *testing.T) {
 	paths := [][]string{
@@ -1467,6 +1473,7 @@ func TestEachKey(t *testing.T) {
 		{"arrInt", "[3]"},
 		{"arrInt", "[5]"}, // Should not find last key
 		{"nested"},
+		{"foo", "["}, // #177 Invalid arguments
 	}
 
 	keysFound := 0
@@ -1513,6 +1520,8 @@ func TestEachKey(t *testing.T) {
 			if string(value) != `{"a":"test", "b":2, "nested3":{"a":"test3","b":4}, "c": "unknown"}` {
 				t.Error("Should find 9 key", string(value))
 			}
+		case 10:
+			t.Errorf("Found key #10 that should not be found")
 		default:
 			t.Errorf("Should find only 9 keys, got %v key", idx)
 		}
