@@ -487,7 +487,7 @@ func EachKey(data []byte, cb func(int, []byte, ValueType, error), paths ...[]str
 				if len(p) < level+1 || pathFlags&bitwiseFlags[pi+1] != 0 || p[level][0] != '[' || !sameTree(p, pathsBuf[:level]) {
 					continue
 				}
-				if len(p[level]-1) > 1 {
+				if len(p[level])-1 >= 1 {
 					aIdx, _ := strconv.Atoi(p[level][1 : len(p[level])-1])
 					arrIdxFlags |= bitwiseFlags[aIdx+1]
 					pIdxFlags |= bitwiseFlags[pi+1]					
