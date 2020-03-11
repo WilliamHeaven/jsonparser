@@ -835,7 +835,7 @@ var getIntTests = []GetTest{
 		desc:  `Crash in searchKeys`,
 		json:  `{{{"":`,
 		path:  []string{"a", "b"},
-		isErr: true,
+		data: 0,
 	},
 }
 
@@ -1520,15 +1520,17 @@ func TestEachKey(t *testing.T) {
 			if string(value) != `{"a":"test", "b":2, "nested3":{"a":"test3","b":4}, "c": "unknown"}` {
 				t.Error("Should find 9 key", string(value))
 			}
-		case 10:
-			t.Errorf("Found key #10 that should not be found")
+		case -1:
+			if string(value) != "" {
+				t.Errorf("Found key #10 that should not be found")
+			}
 		default:
 			t.Errorf("Should find only 9 keys, got %v key", idx)
 		}
 	}, paths...)
 
-	if keysFound != 9 {
-		t.Errorf("Should find 9 keys: %d", keysFound)
+	if keysFound != 10 {
+		t.Errorf("Should find 10 keys: %d", keysFound)
 	}
 }
 
