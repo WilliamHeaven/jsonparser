@@ -185,6 +185,30 @@ var deleteTests = []DeleteTest{
 		path: []string{"b"},
 		data: `{"a": "1" , "c": 3}`,
 	},
+	{
+		desc: "Correctly delete data ending with comma",
+		json: `{"test":"input","test1":"input1"}`,
+		path: []string{"test"},
+		data: `{"test1":"input1"}`,
+	},
+	{
+		desc: "delete problem data",
+		json: `{"test:":"input"}`,
+		path: []string{"test","test1"},
+		data: `{"test:":"input"}`,
+	},
+	{
+		desc: "Delete the first key",
+		json: `[{"key":"val-obj1"},{"key2":"val-obj2"}]`,
+		path: []string{"[0]"},
+		data: `["key2":"val-obj2"}]`,
+	},
+	{
+		desc: "Delete non-first key value",
+		json: `[{"key":"val-obj1"},{"key2":"val-obj2"}]`,
+		path: []string{"[1]"},
+		data: `[{"key":"val-obj1"}]`,
+	},
 }
 
 var setTests = []SetTest{
@@ -379,6 +403,19 @@ var setTests = []SetTest{
 		setData: `"value"`,
 		isFound: true,
 		data:    `{"top":["one", "two", "value"]}`,
+	},
+	{
+		desc:    "set no key",
+		json:    `{"test":"input"}`,
+		setData: `"new value"`,
+		isFound: false,
+	},
+	{
+		desc:    "set problem data",
+		json:    `{"test"::"input"}`,
+		path:    []string{"test"},
+		setData: "new value",
+		isErr:true,
 	},
 }
 
@@ -831,6 +868,12 @@ var getIntTests = []GetTest{
 		path:  []string{"p"},
 		isErr: true,
 	},
+	{
+		desc:    `read fake number`,
+		json:    `{"a": "b", "c": "d"}`,
+		path:    []string{"c"},
+		isErr: true,
+	},
 }
 
 var getFloatTests = []GetTest{
@@ -847,6 +890,12 @@ var getFloatTests = []GetTest{
 		path:    []string{"c"},
 		isFound: true,
 		data:    float64(23.41323),
+	},
+	{
+		desc:    `read fake float`,
+		json:    `{"a": "b", "c": "d"}`,
+		path:    []string{"c"},
+		isErr: true,
 	},
 }
 
@@ -899,6 +948,43 @@ var getStringTests = []GetTest{
 		path:    []string{"o"},
 		isFound: false,
 		data:    ``,
+	},
+	{
+		desc:    `read fake string`,
+		json:    `{"c": true}`,
+		path:    []string{"c"},
+		isErr: true,
+	},
+}
+
+var getUnsafeStringTests = []GetTest{
+	{
+		desc:    `Do not Translate Unicode symbols`,
+		json:    `{"c": "test"}`,
+		path:    []string{"c"},
+		isFound: true,
+		data:    `test`,
+	},
+	{
+		desc:    `Do not Translate Unicode symbols`,
+		json:    `{"c": "15\u00b0C"}`,
+		path:    []string{"c"},
+		isFound: true,
+		data:    `15\u00b0C`,
+	},
+	{
+		desc:    `Do not  Translate supplementary Unicode symbols`,
+		json:    `{"c": "\uD83D\uDE03"}`, // Smiley face (UTF16 surrogate pair)
+		path:    []string{"c"},
+		isFound: true,
+		data:    `\uD83D\uDE03`, // Smiley face
+	},
+	{
+		desc:    `Do not  Translate escape symbols`,
+		json:    `{"c": "\\\""}`,
+		path:    []string{"c"},
+		isFound: true,
+		data:    `\\\"`,
 	},
 }
 
@@ -1166,6 +1252,19 @@ func TestGetString(t *testing.T) {
 	runGetTests(t, "GetString()", getStringTests,
 		func(test GetTest) (value interface{}, dataType ValueType, err error) {
 			value, err = GetString([]byte(test.json), test.path...)
+			return value, String, err
+		},
+		func(test GetTest, value interface{}) (bool, interface{}) {
+			expected := test.data.(string)
+			return expected == value.(string), expected
+		},
+	)
+}
+
+func TestGetUnsafeString(t *testing.T) {
+	runGetTests(t, "GetUnsafeString()", getUnsafeStringTests,
+		func(test GetTest) (value interface{}, dataType ValueType, err error) {
+			value, err = GetUnsafeString([]byte(test.json), test.path...)
 			return value, String, err
 		},
 		func(test GetTest, value interface{}) (bool, interface{}) {
