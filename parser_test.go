@@ -201,7 +201,7 @@ var deleteTests = []DeleteTest{
 		desc: "Delete the first key",
 		json: `[{"key":"val-obj1"},{"key2":"val-obj2"}]`,
 		path: []string{"[0]"},
-		data: `["key2":"val-obj2"}]`,
+		data: `[{"key2":"val-obj2"}]`,
 	},
 	{
 		desc: "Delete non-first key value",
