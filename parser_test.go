@@ -1257,6 +1257,41 @@ func TestArrayEach(t *testing.T) {
 	}, "a", "b")
 }
 
+func TestArrayEachWithSpecialScene(t *testing.T) {
+	//Issue #159
+	mock := []byte(` ["AAA", "BBB", "CCC"]`)
+	mocks := []string{`   a`,`   [`,`   ;`,`   }`,`   ,`,}
+	count := 0
+
+	 ArrayEach(mock, func(value []byte, dataType ValueType, offset int, err error) {
+		count++
+
+		switch count {
+		case 1:
+			if string(value) != `AAA` {
+				t.Errorf("Wrong first item: %s", string(value))
+			}
+		case 2:
+			if string(value) != `BBB` {
+				t.Errorf("Wrong second item: %s", string(value))
+			}
+		case 3:
+			if string(value) != `CCC` {
+				t.Errorf("Wrong third item: %s", string(value))
+			}
+		default:
+			t.Errorf("Should process only 3 items")
+		}
+	 })
+
+	for _, mock := range mocks {
+		_, err := ArrayEach([]byte(mock), func(value []byte, dataType ValueType, offset int, err error) {})
+		if err == nil {
+			t.Errorf("Should Unknown value type")
+		}
+	}
+}
+
 func TestArrayEachEmpty(t *testing.T) {
 	funcError := func([]byte, ValueType, int, error) { t.Errorf("Run func not allow") }
 
