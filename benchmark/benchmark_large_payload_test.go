@@ -18,6 +18,14 @@ import (
 	// "fmt"
 )
 
+var path [] string
+
+func init() {
+	for n :=0; n < 200000 ; n++ {
+		path = append(path, "\"bigdata\",")
+	}
+}
+
 /*
    github.com/buger/jsonparser
 */
@@ -33,6 +41,8 @@ func BenchmarkJsonParserLarge(b *testing.B) {
 			jsonparser.Get(value, "slug")
 			nothing()
 		}, "topics", "topics")
+
+		jsonparser.Set(largeFixture, largeFixture, path...)
 	}
 }
 
