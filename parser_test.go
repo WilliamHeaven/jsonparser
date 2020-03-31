@@ -312,7 +312,7 @@ var setTests = []SetTest{
 		setData: `{"key": "new object"}`,
 		data:    `{"test":"input","new.field":{"nested":{"value":{"key": "new object"}}}}`,
 	},
-		{
+	{
 		desc:    "set unknown key (array within nested object)",
 		json:    `{"id":{"id1":[{"id2":"val2"},{"id3":"val4"}]}}`,
 		isFound: true,
