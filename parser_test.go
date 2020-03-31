@@ -312,6 +312,22 @@ var setTests = []SetTest{
 		setData: `{"key": "new object"}`,
 		data:    `{"test":"input","new.field":{"nested":{"value":{"key": "new object"}}}}`,
 	},
+		{
+		desc:    "set unknown key (array within nested object)",
+		json:    `{"id":{"id1":[{"id2":"val2"},{"id3":"val4"}]}}`,
+		isFound: true,
+		path:    []string{"id","id1","[1]","id3"},
+		setData: `"value4"`,
+		data:    `{"id":{"id1":[{"id2":"val2"},{"id3":"value4"}]}}`,
+	},
+	{
+		desc:    "set known key (complex array within nested object)",
+		json:    `[{"id": 54,"protocol_header": {"captureId": "2002"},"data_header": {"callid": "aa@127.0.0.1","node": "2001"}}]`,
+		isFound: true,
+		path:    []string{"[1]"},
+		setData: `{"data_header": {"callid": "wwt3l4@127.0.0.1_b2b-1"},"id": 676,"protocol_header":{"captureId": "2001"}}`,
+		data:    `[{"id": 54,"protocol_header": {"captureId": "2002"},"data_header": {"callid": "aa@127.0.0.1","node": "2001"}},{"data_header": {"callid": "wwt3l4@127.0.0.1_b2b-1"},"id": 676,"protocol_header":{"captureId": "2001"}}]`,
+	},
 	{
 		desc:    "set in empty json",
 		json:    `{}`,
