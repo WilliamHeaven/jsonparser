@@ -7,14 +7,14 @@ jobs:
           dist: bionic
           script:
               - cd fuzztest
-              - sh fuzzit.sh local-regression
+              - sh fuzzit.sh
         - stage: Fuzz
           if: branch = master AND type IN (push)
           go: 1.12.x
           dist: bionic
           script:
               - cd fuzztest
-              - sh fuzzit.sh fuzzing
+              - sh fuzzit.sh
 
 env:
     GO15VENDOREXPERIMENT=1
