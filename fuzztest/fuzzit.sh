@@ -30,7 +30,7 @@ fi
 # Fuzz
 
 FUNC=Fuzz
-TARGET=$2
+TARGET=$1
 go-fuzz-build -libfuzzer -func $FUNC -o fuzzer.a .
 clang -fsanitize=fuzzer fuzzer.a -o fuzzer
 ./fuzzit create job --type $TYPE $NAME/$TARGET fuzzer
