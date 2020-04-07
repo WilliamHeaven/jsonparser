@@ -14,7 +14,7 @@ jobs:
           dist: bionic
           script:
               - cd fuzztest
-              - sh fuzzit.sh
+              - sh fuzzit.sh fuzztest
 
 env:
     GO15VENDOREXPERIMENT=1
