@@ -18,11 +18,7 @@ export GO111MODULE=on
 go get -u -v \
     github.com/dvyukov/go-fuzz/go-fuzz@$GO_FUZZ_VERSION \
     github.com/dvyukov/go-fuzz/go-fuzz-build@$GO_FUZZ_VERSION
-go mod vendor -v
-rm -rf gopath
-mkdir -p gopath/src
-mv vendor/* gopath/src
-rm -rf vendor
+    
 export GOPATH=$PWD/gopath
 export GO111MODULE=off
 if [[ ! -f fuzzit || ! `./fuzzit --version` =~ $FUZZIT_VERSION$ ]]; then
