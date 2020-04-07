@@ -9,7 +9,7 @@ fi
 
 # Configure
 NAME=jsonparser
-TYPE=$1
+TYPE=local-regression
 FUZZIT_VERSION=2.4.61
 GO_FUZZ_VERSION=1810d380ab9c2786af00db592f86d83063216ed0
 
@@ -29,7 +29,7 @@ fi
 
 # Fuzz
 
-FUNC=Fuzz$1
+FUNC=Fuzz
 TARGET=$2
 go-fuzz-build -libfuzzer -func $FUNC -o fuzzer.a .
 clang -fsanitize=fuzzer fuzzer.a -o fuzzer
