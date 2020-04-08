@@ -5,6 +5,7 @@ set -xe
 ## go-fuzz doesn't support modules for now, so ensure we do everything
 ## in the old style GOPATH way
 export GO111MODULE="off"
+export FUZZIT_API_KEY=339773068c2d0656b6dfbd3894aca9dd67cd7077a1974def6123fb4d62114d00313ffb79c42302c804e6793e92fdb6d4f
 
 ## Install go-fuzz
 go get -u github.com/dvyukov/go-fuzz/go-fuzz github.com/dvyukov/go-fuzz/go-fuzz-build
@@ -25,5 +26,4 @@ wget -O fuzzit https://github.com/fuzzitdev/fuzzit/releases/latest/download/fuzz
 chmod a+x fuzzit
 
 ## upload fuzz target for long fuzz testing on fuzzit.dev server or run locally for regression
-./fuzzit auth CWfPtMm4vMSiEPmiQ3zfkQ
 ./fuzzit create job --type ${1} fuzzitdev/fuzztest/parse_json_fuzz parse_json_fuzz
