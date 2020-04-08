@@ -20,6 +20,3 @@ jobs:
               - cd fuzztest
               - chmod +x fuzzit.sh 
               - ./fuzzit.sh fuzzing
-
-env:
-    GO15VENDOREXPERIMENT=1
