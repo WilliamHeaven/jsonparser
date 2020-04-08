@@ -1,36 +1,28 @@
 #!/bin/bash
 set -xe
 
-# Validate arguments
-if [ "$#" -ne 1 ]; then
-    echo "Usage: $0 <fuzz-type>"
-    exit 1
-fi
+## Build fuzzing targets
+## go-fuzz doesn't support modules for now, so ensure we do everything
+## in the old style GOPATH way
+export GO111MODULE="off"
 
-# Configure
-NAME=jsonparser
-TYPE=local-regression
-FUZZIT_VERSION=2.4.61
-GO_FUZZ_VERSION=1810d380ab9c2786af00db592f86d83063216ed0
+## Install go-fuzz
+go get -u github.com/dvyukov/go-fuzz/go-fuzz github.com/dvyukov/go-fuzz/go-fuzz-build
 
-# Setup
-export GO111MODULE=on
-go get -u -v \
-    github.com/dvyukov/go-fuzz/go-fuzz@$GO_FUZZ_VERSION \
-    github.com/dvyukov/go-fuzz/go-fuzz-build@$GO_FUZZ_VERSION
-    
-export GOPATH=$PWD/gopath
-export GO111MODULE=off
-if [[ ! -f fuzzit || ! `./fuzzit --version` =~ $FUZZIT_VERSION$ ]]; then
-    wget -q -O fuzzit https://github.com/fuzzitdev/fuzzit/releases/download/v$FUZZIT_VERSION/fuzzit_Linux_x86_64
-    chmod a+x fuzzit
-fi
-./fuzzit --version
+# download dependencies into ${GOPATH}
+# -d : only download (don't install)f
+# -v : verbose
+# -u : use the latest version
+# will be different if you use vendoring or a dependency manager
+# like godep
+go get -d -v -u ./...
 
-# Fuzz
+go-fuzz-build -libfuzzer -o fuzz-test.a .
+clang -fsanitize=fuzzer fuzz-test.a -o fuzz-test
 
-FUNC=Fuzz
-TARGET=$1
-go-fuzz-build -libfuzzer -func $FUNC -o fuzzer.a .
-clang -fsanitize=fuzzer fuzzer.a -o fuzzer
-./fuzzit create job --type $TYPE $NAME/$TARGET fuzzer
+## Install fuzzit latest version:
+wget -O fuzzit https://github.com/fuzzitdev/fuzzit/releases/latest/download/fuzzit_Linux_x86_64
+chmod a+x fuzzit
+
+## upload fuzz target for long fuzz testing on fuzzit.dev server or run locally for regression
+./fuzzit create job --type ${1} fuzzitdev/fuzz-test fuzz-test
