@@ -18,7 +18,6 @@ go get -d -v -u ./...
 
 go-fuzz-build -libfuzzer -o parse_json_fuzz.a .
 clang -fsanitize=fuzzer parse_json_fuzz.a  -o parse_json_fuzz
-chmod +x parse_json_fuzz
 
 ## Install fuzzit latest version:
 wget -O fuzzit https://github.com/fuzzitdev/fuzzit/releases/latest/download/fuzzit_Linux_x86_64
