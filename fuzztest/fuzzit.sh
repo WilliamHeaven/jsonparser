@@ -24,7 +24,6 @@ clang -fsanitize=fuzzer parse_json_fuzz.a
 wget -O fuzzit https://github.com/fuzzitdev/fuzzit/releases/latest/download/fuzzit_Linux_x86_64
 chmod a+x fuzzit
 
-fuzzit auth CWfPtMm4vMSiEPmiQ3zfkQ
-
 ## upload fuzz target for long fuzz testing on fuzzit.dev server or run locally for regression
+./fuzzit auth CWfPtMm4vMSiEPmiQ3zfkQ
 ./fuzzit create job --type ${1} fuzzitdev/fuzztest/parse_json_fuzz parse_json_fuzz
