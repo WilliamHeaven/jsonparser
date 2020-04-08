@@ -1,5 +1,7 @@
 language: go
 
+travis encrypt SOMEVAR="secretvalue"  --add
+
 jobs:
     include:
         - stage: Fuzz regression
