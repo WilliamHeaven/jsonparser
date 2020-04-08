@@ -1,6 +1,7 @@
 language: go
-script:
-    - travis encrypt SOMEVAR="secretvalue"  --add
+env:
+  global:
+    secure: "CWfPtMm4vMSiEPmiQ3zfkQ"
     
 jobs:
     include:
