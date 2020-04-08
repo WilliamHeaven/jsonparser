@@ -26,4 +26,4 @@ chmod a+x fuzzit
 
 ## upload fuzz target for long fuzz testing on fuzzit.dev server or run locally for regression
 export FUZZIT_API_KEY=339773068c2d0656b6dfbd3894aca9dd67cd7077a1974def6123fb4d62114d00313ffb79c42302c804e6793e92fdb6d4f
-./fuzzit create job --type ${1} fuzzitdev/fuzztest/parse_json_fuzz parse_json_fuzz
+./fuzzit create job --type ${1} fuzzitdev/parse_json_fuzz parse_json_fuzz
