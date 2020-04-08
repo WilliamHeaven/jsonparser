@@ -17,8 +17,8 @@ go get -u github.com/dvyukov/go-fuzz/go-fuzz github.com/dvyukov/go-fuzz/go-fuzz-
 # like godep
 go get -d -v -u ./...
 
-go-fuzz-build -libfuzzer -o fuzz-test.a .
-clang -fsanitize=fuzzer fuzz-test.a -o fuzz-test
+go-fuzz-build -libfuzzer -o fuzz-test.a fuzz_test.go
+clang -fsanitize=fuzzer fuzz-test.a
 
 ## Install fuzzit latest version:
 wget -O fuzzit https://github.com/fuzzitdev/fuzzit/releases/latest/download/fuzzit_Linux_x86_64
