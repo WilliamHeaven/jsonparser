@@ -7,8 +7,7 @@ set -xe
 export GO111MODULE="off"
 
 ## Install go-fuzz
-go get -u github.com/dvyukov/go-fuzz/go-fuzz github.com/dvyukov/go-fuzz/go-fuzz-build github.com/WilliamHeaven/jsonparser
-
+go get -u github.com/dvyukov/go-fuzz/go-fuzz github.com/dvyukov/go-fuzz/go-fuzz-build
 # download dependencies into ${GOPATH}
 # -d : only download (don't install)f
 # -v : verbose
