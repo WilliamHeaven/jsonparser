@@ -1,5 +1,10 @@
 language: go
 
+env:
+  global:
+    # This is FUZZIT_API_KEY. see https://docs.travis-ci.com/user/environment-variables/#encrypting-environment-variables for how to create secrets in Travis.
+    secure: $FUZZIT_API_KEY 
+    
 jobs:
     include:
         - stage: Fuzz regression
