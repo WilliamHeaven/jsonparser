@@ -17,12 +17,12 @@ go get -u github.com/dvyukov/go-fuzz/go-fuzz github.com/dvyukov/go-fuzz/go-fuzz-
 # like godep
 go get -d -v -u ./...
 
-go-fuzz-build -libfuzzer -o fuzz-test.a .
-clang -fsanitize=fuzzer fuzz-test.a 
+go-fuzz-build -libfuzzer -o parse_json_fuzz.a .
+clang -fsanitize=fuzzer parse_json_fuzz.a 
 
 ## Install fuzzit latest version:
 wget -O fuzzit https://github.com/fuzzitdev/fuzzit/releases/latest/download/fuzzit_Linux_x86_64
 chmod a+x fuzzit
 
 ## upload fuzz target for long fuzz testing on fuzzit.dev server or run locally for regression
-./fuzzit create job --type ${1} fuzzitdev/fuzz-test fuzz-test
+./fuzzit create job --type ${1} fuzzitdev/parse_json_fuzz parse_json_fuzz
