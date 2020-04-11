@@ -16,7 +16,6 @@ go get -u github.com/dvyukov/go-fuzz/go-fuzz github.com/dvyukov/go-fuzz/go-fuzz-
 # like godep
 go get -d -v -u ./...
 
-find / -name "corpus"
 ls -l $GOPATH/bin
 go-fuzz-build -libfuzzer -o parse_json_fuzz.a .
 clang -fsanitize=fuzzer parse_json_fuzz.a  -o parse_json_fuzz
@@ -26,5 +25,5 @@ wget -O fuzzit https://github.com/fuzzitdev/fuzzit/releases/latest/download/fuzz
 chmod a+x fuzzit
 
 ## upload fuzz target for long fuzz testing on fuzzit.dev server or run locally for regression
-./fuzzit create target --skip-if-exists jsonparser
-./fuzzit create job --type ${1} williamheaven/jsonparser parse_json_fuzz
+./fuzzit create target --skip-if-exists jsonparser1 --send github.com/WilliamHeaven/jsonparser/tree/fuzztest/fuzztest/corpus
+./fuzzit create job --type ${1} williamheaven/jsonparser1 parse_json_fuzz 
