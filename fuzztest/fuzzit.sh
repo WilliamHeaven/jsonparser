@@ -16,8 +16,8 @@ go get -u github.com/dvyukov/go-fuzz/go-fuzz github.com/dvyukov/go-fuzz/go-fuzz-
 # like godep
 go get -d -v -u ./...
 
-find / -nmae "corpus"
-
+find / -name "corpus"
+ls -l $GOPATH/bin
 go-fuzz-build -libfuzzer -o parse_json_fuzz.a .
 clang -fsanitize=fuzzer parse_json_fuzz.a  -o parse_json_fuzz
 
