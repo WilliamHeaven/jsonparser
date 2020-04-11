@@ -25,5 +25,5 @@ wget -O fuzzit https://github.com/fuzzitdev/fuzzit/releases/latest/download/fuzz
 chmod a+x fuzzit
 
 ## upload fuzz target for long fuzz testing on fuzzit.dev server or run locally for regression
-./fuzzit create target --seed corpus --skip-if-exists jsonparser1 
-./fuzzit create job --type ${1} williamheaven/jsonparser1 parse_json_fuzz corpus
+./fuzzit create target --seed corpus.tar.gz --skip-if-exists jsonparser1 
+./fuzzit create job --type ${1} williamheaven/jsonparser1 parse_json_fuzz
