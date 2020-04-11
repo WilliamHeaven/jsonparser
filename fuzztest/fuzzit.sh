@@ -4,7 +4,7 @@ set -xe
 ## Build fuzzing targets
 ## go-fuzz doesn't support modules for now, so ensure we do everything
 ## in the old style GOPATH way
-export GO111MODULE="off"
+export GO111MODULE="on"
 
 ## Install go-fuzz
 go get -u github.com/dvyukov/go-fuzz/go-fuzz github.com/dvyukov/go-fuzz/go-fuzz-build
@@ -16,14 +16,14 @@ go get -u github.com/dvyukov/go-fuzz/go-fuzz github.com/dvyukov/go-fuzz/go-fuzz-
 # like godep
 go get -d -v -u ./...
 
-ls -l $GOPATH/bin
-go-fuzz-build -libfuzzer -o parse_json_fuzz.a .
-clang -fsanitize=fuzzer parse_json_fuzz.a  -o parse_json_fuzz
+go-fuzz-build  -o parse_json_fuzz.zip .
+#go-fuzz-build -libfuzzer -o parse_json_fuzz.a .
+#clang -fsanitize=fuzzer parse_json_fuzz.a  -o parse_json_fuzz
 
 ## Install fuzzit latest version:
 wget -O fuzzit https://github.com/fuzzitdev/fuzzit/releases/latest/download/fuzzit_Linux_x86_64
 chmod a+x fuzzit
 
 ## upload fuzz target for long fuzz testing on fuzzit.dev server or run locally for regression
-./fuzzit create target --seed ./corpus.tar.gz --skip-if-exists jsonparser1 
-./fuzzit create job --type ${1} williamheaven/jsonparser1 parse_json_fuzz
+./fuzzit create target --seed ./corpus.tar.gz --skip-if-exists jsonparser2 
+./fuzzit create job --engine go-fuzz --type ${1} williamheaven/jsonparser2 parse_json_fuzz.zip
