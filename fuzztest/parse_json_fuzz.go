@@ -5,8 +5,9 @@ import "github.com/buger/jsonparser"
 func Fuzz(data []byte) int {
 
 	path := []string {"a", "b", "c"}
-
-	values, err := jsonparser.Set(data, data, path...)
+	testJson := []byte(`{"test":"inpout"}`)
+	
+	values, err := jsonparser.Set(testJson, data, path...)
 
 	if err != nil {
 		if values != nil {
@@ -26,10 +27,12 @@ func Fuzz(data []byte) int {
 	jsonparser.EachKey(values, func(idx int, value []byte, valueType jsonparser.ValueType, err error) {
 		switch idx {
 		case 0 :
+		      if string(value) != string(data) {
+	                 panic(`value must be equal to data`)
+		      }
 		default:
-			panic("Eachkey there is an error")
 		}
 	}, path)
-
+	
 	return 1
 }
