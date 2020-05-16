@@ -6,6 +6,7 @@ package benchmark
 
 import (
 	"encoding/json"
+	"github.com/tidwall/gjson"
 	"testing"
 
 	"github.com/Jeffail/gabs"
@@ -304,5 +305,34 @@ func BenchmarkEasyJsonSmall(b *testing.B) {
 		data.UnmarshalEasyJSON(lexer)
 
 		nothing(data.Uuid, data.Tz, data.Ua, data.St)
+	}
+}
+
+/*
+   github.com/valyala/fastjson
+*/
+
+func BenchmarkFastjsonSmall(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		b.Run("small", func(b *testing.B) {
+			benchmarkMarshalTo(b, string(smallFixture))
+		})
+	}
+}
+/*
+   "github.com/tidwall/gjson"
+*/
+
+func BenchmarkGjsonSmall(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		var benchPaths = []string{
+			"uuid",
+			"tz",
+			"ua",
+			"st",
+		}
+		for j := 0; j < len(benchPaths); j++ {
+			gjson.Get(string(smallFixture), benchPaths[j])
+		}
 	}
 }

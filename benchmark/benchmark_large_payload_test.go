@@ -7,6 +7,9 @@ package benchmark
 
 import (
 	"github.com/buger/jsonparser"
+	"github.com/tidwall/gjson"
+	"github.com/valyala/fastjson"
+	"strconv"
 	"testing"
 	// "github.com/Jeffail/gabs"
 	// "github.com/bitly/go-simplejson"
@@ -126,6 +129,47 @@ func BenchmarkDjsonLarge(b *testing.B) {
 		for _, t := range topics {
 			tI := t.(map[string]interface{})
 			nothing(tI["id"].(float64), tI["slug"].(string))
+		}
+	}
+}
+
+/*
+   github.com/valyala/fastjson
+*/
+
+func BenchmarkFastjsonLarge(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		b.Run("large", func(b *testing.B) {
+			benchmarkMarshalTo(b, string(largeFixture))
+		})
+	}
+}
+
+var benchPool fastjson.ParserPool
+func benchmarkMarshalTo(b *testing.B, s string) {
+	p := benchPool.Get()
+	v, _ := p.Parse(s)
+
+	b.RunParallel(func(pb *testing.PB) {
+		var b []byte
+		for pb.Next() {
+			// It is ok calling v.MarshalTo from concurrent
+			// goroutines, since MarshalTo doesn't modify v.
+			b = v.MarshalTo(b[:0])
+		}
+	})
+}
+
+/*
+   "github.com/tidwall/gjson"
+*/
+
+func BenchmarkGjsonLarge(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		len := gjson.Get(string(largeFixture), "topics.topics.#").Int()
+		for i := 0; i < int(len); i++ {
+			paths := "topics.topics." + strconv.Itoa(i) + ".slug"
+			gjson.Get(string(largeFixture), paths)
 		}
 	}
 }

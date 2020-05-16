@@ -1,5 +1,7 @@
 module benchmarks
 
+go 1.14
+
 require (
 	github.com/Jeffail/gabs v1.2.0
 	github.com/a8m/djson v0.0.0-20170509170705-c02c5aef757f
@@ -11,5 +13,8 @@ require (
 	github.com/mailru/easyjson v0.0.0-20190403194419-1ea4449da983
 	github.com/mreiferson/go-ujson v0.0.0-20160507014224-e88340868a14
 	github.com/pquerna/ffjson v0.0.0-20181028064349-e517b90714f7
+	github.com/stretchr/testify v1.5.1 // indirect
+	github.com/tidwall/gjson v1.6.0
 	github.com/ugorji/go v1.1.4
+	github.com/valyala/fastjson v1.5.1
 )

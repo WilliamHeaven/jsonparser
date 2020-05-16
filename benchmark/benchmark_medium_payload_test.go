@@ -6,6 +6,7 @@ package benchmark
 
 import (
 	"encoding/json"
+	"github.com/tidwall/gjson"
 	"testing"
 
 	"github.com/Jeffail/gabs"
@@ -348,6 +349,36 @@ func BenchmarkEasyJsonMedium(b *testing.B) {
 
 		for _, el := range data.Person.Gravatar.Avatars {
 			nothing(el.Url)
+		}
+	}
+}
+
+/*
+   github.com/valyala/fastjson
+*/
+
+func BenchmarkFastjsonMedium(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		b.Run("medium", func(b *testing.B) {
+			benchmarkMarshalTo(b, string(mediumFixture))
+		})
+	}
+}
+/*
+   "github.com/tidwall/gjson"
+*/
+
+func BenchmarkGjsonMedium(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		var benchPaths = []string{
+			"person.name.fullName",
+			"person.github.followers",
+			"company",
+			"person.gravatar.avatars",
+		}
+		
+		for j := 0; j < len(benchPaths); j++ {
+			gjson.Get(string(mediumFixture), benchPaths[j])
 		}
 	}
 }
