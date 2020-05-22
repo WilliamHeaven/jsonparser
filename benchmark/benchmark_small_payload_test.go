@@ -7,6 +7,7 @@ package benchmark
 import (
 	"encoding/json"
 	"github.com/tidwall/gjson"
+	"github.com/valyala/fastjson"
 	"testing"
 
 	"github.com/Jeffail/gabs"
@@ -314,11 +315,15 @@ func BenchmarkEasyJsonSmall(b *testing.B) {
 
 func BenchmarkFastjsonSmall(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		b.Run("small", func(b *testing.B) {
-			benchmarkMarshalTo(b, string(smallFixture))
-		})
+		var p fastjson.Parser
+		value, _ := p.Parse(string(smallFixture))
+		value.Get("uuid")
+		value.GetInt("tz")
+		value.Get("ua")
+		value.GetInt("st")
 	}
 }
+
 /*
    "github.com/tidwall/gjson"
 */

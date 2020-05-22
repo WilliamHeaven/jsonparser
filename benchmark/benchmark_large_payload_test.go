@@ -139,25 +139,19 @@ func BenchmarkDjsonLarge(b *testing.B) {
 
 func BenchmarkFastjsonLarge(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		b.Run("large", func(b *testing.B) {
-			benchmarkMarshalTo(b, string(largeFixture))
-		})
-	}
-}
-
-var benchPool fastjson.ParserPool
-func benchmarkMarshalTo(b *testing.B, s string) {
-	p := benchPool.Get()
-	v, _ := p.Parse(s)
-
-	b.RunParallel(func(pb *testing.PB) {
-		var b []byte
-		for pb.Next() {
-			// It is ok calling v.MarshalTo from concurrent
-			// goroutines, since MarshalTo doesn't modify v.
-			b = v.MarshalTo(b[:0])
+		var p fastjson.Parser
+		value, _ := p.Parse(string(largeFixture))
+		val := value.GetArray("users")
+		for i := 0 ; i < len(val); i++ {
+			 val[i].Get("username")
 		}
-	})
+
+		val = value.GetArray("topics", "topics")
+		for i := 0 ; i < len(val); i++ {
+		 	val[i].GetInt("id")
+			val[i].Get("slug")
+		}
+	}
 }
 
 /*
@@ -166,7 +160,13 @@ func benchmarkMarshalTo(b *testing.B, s string) {
 
 func BenchmarkGjsonLarge(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		len := gjson.Get(string(largeFixture), "topics.topics.#").Int()
+		len := gjson.Get(string(largeFixture), "users.#").Int()
+		for i := 0; i < int(len); i++ {
+			paths := "users." + strconv.Itoa(i) + ".username"
+			gjson.Get(string(largeFixture), paths)
+		}
+
+		len = gjson.Get(string(largeFixture), "topics.topics.#").Int()
 		for i := 0; i < int(len); i++ {
 			paths := "topics.topics." + strconv.Itoa(i) + ".slug"
 			gjson.Get(string(largeFixture), paths)
