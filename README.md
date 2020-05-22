@@ -61,7 +61,7 @@ jsonparser.ArrayEach(data, func(value []byte, dataType jsonparser.ValueType, off
 }, "person", "avatars")
 
 // Or use can access fields by index!
-jsonparser.GetInt("person", "avatars", "[0]", "url")
+jsonparser.GetString(data, "person", "avatars", "[0]", "url")
 
 // You can use `ObjectEach` helper to iterate objects { "key1":object1, "key2":object2, .... "keyN":objectN }
 jsonparser.ObjectEach(data, func(key []byte, value []byte, dataType jsonparser.ValueType, offset int) error {
@@ -253,6 +253,8 @@ Compared libraries:
 * https://github.com/pquerna/ffjson
 * https://github.com/mailru/easyjson
 * https://github.com/buger/jsonparser
+* https://github.com/valyala/fastjson
+* https://github.com/tidwall/gjson
 
 #### TLDR
 If you want to skip next sections we have 2 winner: `jsonparser` and `easyjson`.
@@ -286,10 +288,12 @@ mreiferson/go-ujson | **7008** | **1409** | 37
 a8m/djson | 3862 | 1249 | 30 
 pquerna/ffjson | **3769** | **624** | **15** 
 mailru/easyjson | **2002** | **192** | **9** 
+valyala/fastjson | **3580** | **3616** | **12** 
+tidwall/gjson | **2031** | **768** | **4** 
 buger/jsonparser | **1367** | **0** | **0** 
 buger/jsonparser (EachKey API) | **809** | **0** | **0** 
 
-Winners are ffjson, easyjson and jsonparser, where jsonparser is up to 9.8x faster than encoding/json and 4.6x faster than ffjson, and slightly faster than easyjson.
+Winners are gjson, easyjson and jsonparser, where jsonparser is up to 9.8x faster than encoding/json and 4.6x faster than ffjson, and slightly faster than easyjson.
 If you look at memory allocation, jsonparser has no rivals, as it makes no data copy and operates with raw []byte structures and pointers to it.
 
 #### Medium payload
@@ -311,6 +315,8 @@ https://github.com/buger/jsonparser/blob/master/benchmark/benchmark_medium_paylo
 | a8m/djson | 28525 | 10196 | 198 | 
 | pquerna/ffjson | **20298** | **856** | **20** |
 | mailru/easyjson | **10512** | **336** | **12** |
+| valyala/fastjson | **21447** | **20376** | **55** |
+| tidwall/gjson | **15608** | **10752** | **4** |
 | buger/jsonparser | **15955** | **0** | **0** |
 | buger/jsonparser (EachKey API) | **8916** | **0** | **0** |
 
@@ -335,6 +341,8 @@ https://github.com/buger/jsonparser/blob/master/benchmark/benchmark_large_payloa
 | a8m/djson | 510082 | 213682 | 2845 |
 | pquerna/ffjson | **312271** | **7792** | **298** |
 | mailru/easyjson | **154186** | **6992** | **288** |
+| valyala/fastjson | **251615** | **311872** | **541** |
+| tidwall/gjson | **1941269** | **1836833** | **126** |
 | buger/jsonparser | **85308** | **0** | **0** |
 
 `jsonparser` now is a winner, but do not forget that it is way more lightweight parser than `ffson` or `easyjson`, and they have to parser all the data, while `jsonparser` parse only what you need. All `ffjson`, `easysjon` and `jsonparser` have their own parsing code, and does not depend on `encoding/json` or `interface{}`, thats one of the reasons why they are so fast. `easyjson` also use a bit of `unsafe` package to reduce memory consuption (in theory it can lead to some unexpected GC issue, but i did not tested enough)
